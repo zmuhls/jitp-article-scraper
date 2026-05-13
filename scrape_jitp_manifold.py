@@ -88,7 +88,7 @@ EXISTING_STATUS_FIELDS = {
 
 def fetch_text(url, accept_json=False, retries=3):
     headers = {
-        "User-Agent": "JITP metadata audit (Codex; editorial workspace)",
+        "User-Agent": "JITP article metadata scraper",
     }
     if accept_json:
         headers["Accept"] = "application/vnd.api+json"

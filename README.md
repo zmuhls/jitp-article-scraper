@@ -1,13 +1,15 @@
 # JITP Article Scraper
 
-Runnable scraper and processor for Journal of Interactive Technology and Pedagogy article metadata on CUNY Manifold. Note that the scraper can be rerun to update current values and refreshed existing scrape results.
+Runnable scraper and workbook processor for Journal of Interactive Technology and Pedagogy article metadata on CUNY Manifold. The scraper can be rerun to update current values and refresh existing scrape results.
+
+The project can be run as a normal Python project. It does not require editor-specific runtimes or private tooling.
 
 ## What It Does
 
 The workflow has two stages:
 
 1. `scrape_jitp_manifold.py` collects issue, project, text, article-page, byline, author bio, abstract, notes, references, and normalized text data from CUNY Manifold.
-2. `build_jitp_metadata_workbook.mjs` turns the scraper JSON into a focused Excel workbook.
+2. `build_jitp_metadata_workbook.py` turns the scraper JSON into a focused Excel workbook.
 
 Current scrape scope:
 
@@ -23,7 +25,7 @@ Current scrape scope:
 
 ```text
 jitp-article-scraper/
-├── build_jitp_metadata_workbook.mjs
+├── build_jitp_metadata_workbook.py
 ├── data/
 │   └── jitp_manifold_metadata.json
 ├── package.json
@@ -39,13 +41,22 @@ jitp-article-scraper/
 
 Generated outputs are written under `outputs/` and ignored by git.
 
-## Current-System Run
+## Setup
 
-This machine already has the required Codex runtimes:
+Create a virtual environment and install dependencies:
 
-- Python: `/Users/zacharymuhlbauer/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3`
-- Node: `/Users/zacharymuhlbauer/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
-- Node modules: `/Users/zacharymuhlbauer/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules`
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Dependencies:
+
+- `lxml` for parsing rendered Manifold pages
+- `openpyxl` for writing the Excel workbook
+
+## Run
 
 Run a full refresh and workbook rebuild:
 
@@ -55,12 +66,11 @@ bash scripts/update_current_system.sh
 
 The script:
 
-1. Checks the current Codex Python and Node runtimes.
-2. Creates a local `node_modules` symlink to the current Codex dependency bundle if needed.
-3. Runs the scraper.
-4. Uses `data/jitp_manifold_metadata.json` as the existing-result fallback.
-5. Rebuilds the workbook.
-6. Writes outputs to `outputs/jitp_manifold_metadata/`.
+1. Uses `python3` by default, or `JITP_PYTHON` if set.
+2. Runs the scraper.
+3. Uses `data/jitp_manifold_metadata.json` as the existing-result fallback.
+4. Rebuilds the workbook.
+5. Writes outputs to `outputs/jitp_manifold_metadata/`.
 
 Expected outputs:
 
@@ -74,7 +84,7 @@ outputs/jitp_manifold_metadata/jitp_manifold_article_metadata.xlsx
 Scrape only:
 
 ```bash
-/Users/zacharymuhlbauer/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 scrape_jitp_manifold.py \
+python3 scrape_jitp_manifold.py \
   --output-dir outputs/jitp_manifold_metadata \
   --existing-json data/jitp_manifold_metadata.json
 ```
@@ -82,7 +92,7 @@ Scrape only:
 Build workbook only:
 
 ```bash
-/Users/zacharymuhlbauer/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node build_jitp_metadata_workbook.mjs \
+python3 build_jitp_metadata_workbook.py \
   --input-json outputs/jitp_manifold_metadata/jitp_manifold_metadata.json \
   --output-dir outputs/jitp_manifold_metadata
 ```
@@ -109,14 +119,6 @@ Fallback use is recorded per row in `existing_result_used`.
 --input-json    Path to jitp_manifold_metadata.json
 --output-dir    Output directory
 --output-xlsx   Optional full output path for the workbook
-```
-
-The workbook builder also accepts:
-
-```text
-JITP_INPUT_JSON
-JITP_OUTPUT_DIR
-JITP_OUTPUT_XLSX
 ```
 
 ## Workbook Sheets
@@ -161,7 +163,7 @@ Workbook publication rows are sorted by:
 
 ## Author Processing
 
-The builder splits combined byline cells into separate author records. It handles:
+The workbook builder splits combined byline cells into separate author records. It handles:
 
 - comma-separated names
 - `and`
@@ -224,7 +226,6 @@ After running `scripts/update_current_system.sh`, check:
 
 - The scraper prints a JSON summary and output path.
 - The workbook builder prints the workbook path.
-- The workbook builder reports `Cell search matched 0 entries`.
 - `Field Notes` contains expected counts.
 - `Shorts` has one header row plus short-form publication rows.
 - `Issues` has one header row plus numbered-issue publication rows.
@@ -234,20 +235,11 @@ After running `scripts/update_current_system.sh`, check:
 Intended remote:
 
 ```text
-git@github.com:zmuhls/jitp-article-scraper.git
+https://github.com/zmuhls/jitp-article-scraper.git
 ```
 
-If the GitHub CLI is authenticated, create and push with:
+Push updates with:
 
 ```bash
-gh repo create zmuhls/jitp-article-scraper --private --source=. --remote=origin --push
+git push
 ```
-
-Or, if the repo already exists:
-
-```bash
-git remote add origin git@github.com:zmuhls/jitp-article-scraper.git
-git push -u origin main
-```
-
-The local `gh` session must be authenticated for the `zmuhls` account before those commands will work.
