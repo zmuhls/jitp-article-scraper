@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+node_modules
+node_modules/
+outputs/
+*_preview.png
+npm-debug.log*

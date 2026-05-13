@@ -1,0 +1,14 @@
+{
+  "name": "jitp-article-scraper",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Scrape and process JITP metadata from CUNY Manifold.",
+  "scripts": {
+    "update:current-system": "bash scripts/update_current_system.sh",
+    "build:workbook": "node build_jitp_metadata_workbook.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

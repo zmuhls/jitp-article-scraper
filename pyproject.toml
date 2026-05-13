@@ -1,0 +1,12 @@
+[project]
+name = "jitp-article-scraper"
+version = "0.1.0"
+description = "Scrape and process Journal of Interactive Technology and Pedagogy metadata from CUNY Manifold."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "lxml>=5.0",
+]
+
+[tool.ruff]
+line-length = 120
