@@ -1,8 +1,6 @@
 # JITP Article Scraper
 
-Runnable scraper and processor for Journal of Interactive Technology and Pedagogy article metadata on CUNY Manifold.
-
-This project was compiled from the JITP editorial workspace so it can be rerun on the current system and refreshed from the existing scrape results.
+Runnable scraper and processor for Journal of Interactive Technology and Pedagogy article metadata on CUNY Manifold. Note that the scraper can be rerun to update current values and refreshed existing scrape results.
 
 ## What It Does
 
